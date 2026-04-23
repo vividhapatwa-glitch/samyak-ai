@@ -93,7 +93,13 @@ async function send() {
     const data = await res.json();
 
     // show AI response
-    chat.innerHTML += `<div class="bot"><b>Guru:</b> ${data.reply}</div>`;
+    const loadingId = Date.now();
+chat.innerHTML += `<div class="bot" id="${loadingId}">Guru is thinking...</div>`;
+
+const data = await res.json();
+
+document.getElementById(loadingId).innerHTML =
+  `<b>Guru:</b> ${data.reply}`;
 
     chat.scrollTop = chat.scrollHeight;
 
