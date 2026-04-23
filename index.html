@@ -1,53 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Samyak AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #chat {
+      height: 300px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .user { text-align: right; margin: 5px; }
+    .bot { text-align: left; margin: 5px; }
+
+    .bubble-user {
+      background: #f4c430;
+      padding: 8px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .bubble-bot {
+      background: #eee;
+      padding: 8px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    input {
+      padding: 10px;
+      width: 70%;
+    }
+
+    button {
+      padding: 10px;
+      background: gold;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🪔 Samyak AI – Jain Guru</h1>
+
+<div id="chat"></div>
+
+<input id="input" placeholder="Ask about Jainism..." />
+<button onclick="send()">Send</button>
+
 <script>
 
 window.onload = function () {
-  try {
-    const chat = document.getElementById("chat");
+  const chat = document.getElementById("chat");
 
-    if (chat) {
-      chat.innerHTML = `
-        <div class="bot">
-          <span class="bubble-bot">
-            🙏 Welcome to Samyak AI<br><br>
-            Ask me anything about Jain philosophy.
-          </span>
-        </div>
-      `;
-    }
-  } catch (e) {
-    console.error("Error in onload:", e);
-  }
+  chat.innerHTML = `
+    <div class="bot">
+      <span class="bubble-bot">
+        🙏 Welcome to Samyak AI<br><br>
+        Ask me anything about Jain philosophy.
+      </span>
+    </div>
+  `;
 };
 
-
 async function send() {
+  const input = document.getElementById("input");
+  const chat = document.getElementById("chat");
+
+  const message = input.value.trim();
+  if (!message) return;
+
+  chat.innerHTML += `
+    <div class="user">
+      <span class="bubble-user">${message}</span>
+    </div>
+  `;
+
+  input.value = "";
+
+  const loadingId = Date.now();
+
+  chat.innerHTML += `
+    <div id="${loadingId}" class="bot">
+      <span class="bubble-bot">Guru is thinking...</span>
+    </div>
+  `;
+
+  chat.scrollTop = chat.scrollHeight;
+
   try {
-    const input = document.getElementById("input");
-    const chat = document.getElementById("chat");
-
-    if (!input || !chat) return;
-
-    const message = input.value.trim();
-    if (!message) return;
-
-    chat.innerHTML += `
-      <div class="user">
-        <span class="bubble-user">${message}</span>
-      </div>
-    `;
-
-    input.value = "";
-
-    const loadingId = "load-" + Date.now();
-
-    chat.innerHTML += `
-      <div id="${loadingId}" class="bot">
-        <span class="bubble-bot">Guru is thinking...</span>
-      </div>
-    `;
-
-    chat.scrollTop = chat.scrollHeight;
-
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -58,33 +113,16 @@ async function send() {
 
     const data = await res.json();
 
-    const el = document.getElementById(loadingId);
-    if (el) {
-      el.innerHTML = `
-        <span class="bubble-bot">
-          ${data.reply || data.error || "No response"}
-        </span>
-      `;
-    }
-
-    chat.scrollTop = chat.scrollHeight;
+    document.getElementById(loadingId).innerHTML = `
+      <span class="bubble-bot">${data.reply || data.error}</span>
+    `;
 
   } catch (err) {
-    console.error(err);
-  }
-}
-
-
-function quick(q) {
-  try {
-    const input = document.getElementById("input");
-    if (input) {
-      input.value = q;
-      send();
-    }
-  } catch (e) {
-    console.error(e);
+    document.getElementById(loadingId).innerText = "Error connecting";
   }
 }
 
 </script>
+
+</body>
+</html>
