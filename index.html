@@ -1,54 +1,124 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Samyak AI</title>
+  <title>Samyak AI – Jain Guru</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
-      font-family: Arial;
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: #f5f5f5;
+    }
+
+    h1 {
       text-align: center;
       padding: 20px;
     }
 
-    #chat {
-      height: 300px;
-      overflow-y: auto;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+    .container {
+      max-width: 800px;
+      margin: auto;
       padding: 10px;
-      margin-bottom: 10px;
     }
 
-    .user { text-align: right; margin: 5px; }
-    .bot { text-align: left; margin: 5px; }
+    /* CHAT */
+    #chat {
+      height: 400px;
+      overflow-y: auto;
+      background: white;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .user, .bot {
+      margin: 10px 0;
+    }
+
+    .user { text-align: right; }
+    .bot { text-align: left; }
 
     .bubble-user {
       background: #f4c430;
-      padding: 8px;
-      border-radius: 10px;
+      padding: 10px 14px;
+      border-radius: 15px;
       display: inline-block;
+      max-width: 70%;
     }
 
     .bubble-bot {
       background: #eee;
-      padding: 8px;
-      border-radius: 10px;
+      padding: 10px 14px;
+      border-radius: 15px;
       display: inline-block;
+      max-width: 70%;
+    }
+
+    /* INPUT */
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     input {
-      padding: 10px;
-      width: 70%;
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
     button {
-      padding: 10px;
-      background: gold;
+      background: #f4c430;
       border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
       cursor: pointer;
+    }
+
+    /* SUGGESTIONS */
+    .suggestions {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .suggestions button {
+      margin: 5px;
+      background: #eee;
+      border-radius: 20px;
+      padding: 8px 12px;
+      border: none;
+    }
+
+    /* SECTIONS */
+    .section {
+      background: white;
+      margin-top: 25px;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .card {
+      background: #fafafa;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #eee;
+    }
+
+    .card:hover {
+      background: #fff8dc;
+      transform: translateY(-2px);
     }
   </style>
 </head>
@@ -57,13 +127,59 @@
 
 <h1>🪔 Samyak AI – Jain Guru</h1>
 
-<div id="chat"></div>
+<div class="container">
 
-<input id="input" placeholder="Ask about Jainism..." />
-<button onclick="send()">Send</button>
+  <!-- CHAT -->
+  <div id="chat"></div>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <input id="input" placeholder="Ask about Jainism..." />
+    <button onclick="send()">Send</button>
+  </div>
+
+  <!-- SUGGESTIONS -->
+  <div class="suggestions">
+    <p>Try asking:</p>
+    <button onclick="quick('What is Navkar Mantra?')">Navkar Mantra</button>
+    <button onclick="quick('How to reduce karma?')">Reduce Karma</button>
+    <button onclick="quick('What is ahimsa?')">Ahimsa</button>
+  </div>
+
+  <!-- DAILY PRACTICE -->
+  <div class="section">
+    <h3>Daily Jain Practice</h3>
+    <div class="cards">
+      <div class="card" onclick="quick('Explain Navkar Mantra practice')">
+        🌼 Morning Navkar Focus
+      </div>
+      <div class="card" onclick="quick('Daily Jain habits')">
+        🌿 Small Spiritual Habits
+      </div>
+      <div class="card" onclick="quick('Jain fasting rules')">
+        🔥 Fasting Guidance
+      </div>
+    </div>
+  </div>
+
+  <!-- KNOWLEDGE -->
+  <div class="section">
+    <h3>Knowledge Library</h3>
+    <div class="cards">
+      <div class="card" onclick="quick('What is Aagam in Jainism?')">📖 Aagam</div>
+      <div class="card" onclick="quick('Explain Jain Granth')">📚 Granth</div>
+      <div class="card" onclick="quick('Tell Jain stories')">📜 Jain Stories</div>
+      <div class="card" onclick="quick('Explain 24 Tirthankars')">🧘 24 Tirthankars</div>
+      <div class="card" onclick="quick('Explain Karma Theory')">⚖ Karma Theory</div>
+      <div class="card" onclick="quick('Explain Gunasthanak')">🔺 Gunasthanak</div>
+    </div>
+  </div>
+
+</div>
 
 <script>
 
+// Welcome message
 window.onload = function () {
   const chat = document.getElementById("chat");
 
@@ -71,12 +187,13 @@ window.onload = function () {
     <div class="bot">
       <span class="bubble-bot">
         🙏 Welcome to Samyak AI<br><br>
-        Ask me anything about Jain philosophy.
+        Ask me anything about Jain philosophy, karma, and ahimsa.
       </span>
     </div>
   `;
 };
 
+// Send message
 async function send() {
   const input = document.getElementById("input");
   const chat = document.getElementById("chat");
@@ -117,9 +234,18 @@ async function send() {
       <span class="bubble-bot">${data.reply || data.error}</span>
     `;
 
+    chat.scrollTop = chat.scrollHeight;
+
   } catch (err) {
-    document.getElementById(loadingId).innerText = "Error connecting";
+    document.getElementById(loadingId).innerHTML =
+      `<span class="bubble-bot">Error connecting to AI</span>`;
   }
+}
+
+// Quick buttons
+function quick(q) {
+  document.getElementById("input").value = q;
+  send();
 }
 
 </script>
