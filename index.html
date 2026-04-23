@@ -1,53 +1,53 @@
 <script>
 
-// ✅ Welcome message on load
-window.onload = () => {
-  const chat = document.getElementById("chat");
+window.onload = function () {
+  try {
+    const chat = document.getElementById("chat");
 
-  chat.innerHTML = `
-    <div class="bot">
-      <span class="bubble-bot">
-        🙏 Welcome to Samyak AI<br><br>
-        Ask me anything about Jain philosophy, karma, ahimsa, or daily life.
-      </span>
-    </div>
-  `;
+    if (chat) {
+      chat.innerHTML = `
+        <div class="bot">
+          <span class="bubble-bot">
+            🙏 Welcome to Samyak AI<br><br>
+            Ask me anything about Jain philosophy.
+          </span>
+        </div>
+      `;
+    }
+  } catch (e) {
+    console.error("Error in onload:", e);
+  }
 };
 
 
-// ✅ Send message to AI
 async function send() {
-  const input = document.getElementById("input");
-  const message = input.value.trim();
-
-  if (!message) return;
-
-  const chat = document.getElementById("chat");
-
-  // 🟡 Show user message
-  chat.innerHTML += `
-    <div class="user">
-      <span class="bubble-user">${message}</span>
-    </div>
-  `;
-
-  // scroll down
-  chat.scrollTop = chat.scrollHeight;
-
-  input.value = "";
-
-  // 🟡 Loading message
-  const loadingId = "loading-" + Date.now();
-
-  chat.innerHTML += `
-    <div id="${loadingId}" class="bot">
-      <span class="bubble-bot">Guru is thinking...</span>
-    </div>
-  `;
-
-  chat.scrollTop = chat.scrollHeight;
-
   try {
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+
+    if (!input || !chat) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    chat.innerHTML += `
+      <div class="user">
+        <span class="bubble-user">${message}</span>
+      </div>
+    `;
+
+    input.value = "";
+
+    const loadingId = "load-" + Date.now();
+
+    chat.innerHTML += `
+      <div id="${loadingId}" class="bot">
+        <span class="bubble-bot">Guru is thinking...</span>
+      </div>
+    `;
+
+    chat.scrollTop = chat.scrollHeight;
+
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -58,29 +58,33 @@ async function send() {
 
     const data = await res.json();
 
-    // 🟢 Replace loading with AI response
-    document.getElementById(loadingId).innerHTML = `
-      <span class="bubble-bot">
-        ${data.reply || data.error || "No response"}
-      </span>
-    `;
+    const el = document.getElementById(loadingId);
+    if (el) {
+      el.innerHTML = `
+        <span class="bubble-bot">
+          ${data.reply || data.error || "No response"}
+        </span>
+      `;
+    }
 
     chat.scrollTop = chat.scrollHeight;
 
   } catch (err) {
-    document.getElementById(loadingId).innerHTML = `
-      <span class="bubble-bot">
-        ❌ Error connecting to AI
-      </span>
-    `;
+    console.error(err);
   }
 }
 
 
-// ✅ Quick question buttons
 function quick(q) {
-  document.getElementById("input").value = q;
-  send();
+  try {
+    const input = document.getElementById("input");
+    if (input) {
+      input.value = q;
+      send();
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 </script>
