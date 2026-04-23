@@ -4,7 +4,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message } = req.body;
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    const message = body.message;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -17,7 +18,8 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content: "You are a Jain spiritual guide. Answer simply, calmly, and based on ahimsa, anekantvad, and karma philosophy."
+            content:
+              "You are a Jain spiritual guide. Answer simply, calmly, and based on ahimsa, anekantvad, and karma philosophy."
           },
           {
             role: "user",
@@ -29,11 +31,17 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    console.log("OpenAI Response:", data);
+
     return res.status(200).json({
-      reply: data.choices?.[0]?.message?.content || "No response"
+      reply:
+        data.choices?.[0]?.message?.content ||
+        data.error?.message ||
+        "No response"
     });
 
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: error.message });
   }
 }
