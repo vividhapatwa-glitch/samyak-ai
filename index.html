@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Samyak AI</title>
+
   <style>
     body {
       font-family: Arial;
@@ -27,6 +28,7 @@
     .user {
       text-align: right;
       margin: 10px;
+      color: blue;
     }
 
     .bot {
@@ -52,6 +54,18 @@
       background: gold;
       border: none;
       cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .suggestions {
+      max-width: 600px;
+      margin: auto;
+      margin-top: 10px;
+    }
+
+    .suggestions button {
+      margin: 5px;
+      background: #eee;
     }
   </style>
 </head>
@@ -67,6 +81,14 @@
   <button onclick="send()">Send</button>
 </div>
 
+<!-- ✅ Sample Questions -->
+<div class="suggestions">
+  <p>Try asking:</p>
+  <button onclick="quick('What is Navkar Mantra?')">Navkar Mantra</button>
+  <button onclick="quick('How to reduce karma?')">Reduce Karma</button>
+  <button onclick="quick('What is ahimsa?')">Ahimsa</button>
+</div>
+
 <script>
 async function send() {
   const input = document.getElementById("input");
@@ -76,10 +98,14 @@ async function send() {
 
   const chat = document.getElementById("chat");
 
-  // show user message
+  // user message
   chat.innerHTML += `<div class="user"><b>You:</b> ${message}</div>`;
 
   input.value = "";
+
+  // loading
+  const loadingId = Date.now();
+  chat.innerHTML += `<div class="bot" id="${loadingId}">Guru is thinking...</div>`;
 
   try {
     const res = await fetch("/api/chat", {
@@ -92,20 +118,21 @@ async function send() {
 
     const data = await res.json();
 
-    // show AI response
-    const loadingId = Date.now();
-chat.innerHTML += `<div class="bot" id="${loadingId}">Guru is thinking...</div>`;
-
-const data = await res.json();
-
-document.getElementById(loadingId).innerHTML =
-  `<b>Guru:</b> ${data.reply}`;
+    document.getElementById(loadingId).innerHTML =
+      `<b>Guru:</b> ${data.reply}`;
 
     chat.scrollTop = chat.scrollHeight;
 
   } catch (err) {
-    chat.innerHTML += `<div class="bot">Error connecting</div>`;
+    document.getElementById(loadingId).innerHTML =
+      "Error connecting to AI";
   }
+}
+
+// quick buttons
+function quick(q) {
+  document.getElementById("input").value = q;
+  send();
 }
 </script>
 
