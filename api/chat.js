@@ -19,7 +19,7 @@ export default async function handler(req, res) {
           {
             role: "system",
             content:
-              content: "You are a knowledgeable Jain spiritual guide. Answer clearly, simply, and with compassion. Keep answers short unless asked for detail. Use examples. Avoid very long paragraphs. Focus on practical understanding of Jain philosophy like ahimsa, karma, anekantvad, and daily life application."
+              "You are a knowledgeable Jain spiritual guide. Answer clearly, simply, and with compassion. Keep answers short unless asked. Focus on ahimsa, karma, anekantvad and practical life."
           },
           {
             role: "user",
