@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Samyak AI</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -15,8 +14,14 @@
     header {
       text-align: center;
       padding: 20px;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: gray;
+      margin-bottom: 10px;
     }
 
     .container {
@@ -27,11 +32,12 @@
 
     .chat-box {
       background: white;
-      height: 400px;
+      height: 300px;
       overflow-y: auto;
       padding: 15px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
     }
 
     .user {
@@ -47,14 +53,14 @@
     .bubble-user {
       background: #f4c430;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 12px;
       display: inline-block;
     }
 
     .bubble-bot {
       background: #eee;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 12px;
       display: inline-block;
     }
 
@@ -86,6 +92,8 @@
     .suggestions button {
       margin: 5px;
       background: #eee;
+      border-radius: 20px;
+      padding: 8px 12px;
     }
 
     .section {
@@ -96,6 +104,11 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
+    .section h3 {
+      margin-bottom: 10px;
+      color: #444;
+    }
+
     .cards {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -104,8 +117,16 @@
 
     .card {
       background: #fafafa;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 1px solid #eee;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      background: #fff8dc;
+      transform: translateY(-3px);
     }
 
     footer {
@@ -120,6 +141,8 @@
 <body>
 
 <header>🪔 Samyak AI – Jain Guru</header>
+<p class="subtitle">Ask. Reflect. Evolve.</p>
+<p class="subtitle">Ask anything about Jain philosophy, karma, and spiritual life</p>
 
 <div class="container">
 
@@ -143,9 +166,9 @@
   <div class="section">
     <h3>Daily Jain Practice</h3>
     <div class="cards">
-      <div class="card">Morning Navkar Focus</div>
-      <div class="card">Small Spiritual Habits</div>
-      <div class="card">Fasting Guidance</div>
+      <div class="card" onclick="quick('Explain Navkar Mantra practice')">🌼 Morning Navkar Focus</div>
+      <div class="card" onclick="quick('Daily Jain habits')">🌿 Small Spiritual Habits</div>
+      <div class="card" onclick="quick('Jain fasting rules')">🔥 Fasting Guidance</div>
     </div>
   </div>
 
@@ -153,12 +176,12 @@
   <div class="section">
     <h3>Knowledge Library</h3>
     <div class="cards">
-      <div class="card">Aagam</div>
-      <div class="card">Granth</div>
-      <div class="card">Jain Stories</div>
-      <div class="card">24 Tirthankars</div>
-      <div class="card">Karma Theory</div>
-      <div class="card">Gunasthanak</div>
+      <div class="card" onclick="quick('What is Aagam in Jainism?')">📖 Aagam</div>
+      <div class="card" onclick="quick('Explain Jain Granth')">📚 Granth</div>
+      <div class="card" onclick="quick('Tell Jain moral stories')">📜 Jain Stories</div>
+      <div class="card" onclick="quick('Explain 24 Tirthankars')">🧘 24 Tirthankars</div>
+      <div class="card" onclick="quick('Explain Karma Theory')">⚖ Karma Theory</div>
+      <div class="card" onclick="quick('Explain Gunasthanak')">🔺 Gunasthanak</div>
     </div>
   </div>
 
@@ -166,9 +189,9 @@
   <div class="section">
     <h3>Stavan & Stuti</h3>
     <div class="cards">
-      <div class="card">Navkar Mantra</div>
-      <div class="card">Bhaktamar Stotra</div>
-      <div class="card">Uvasaggaharam</div>
+      <div class="card" onclick="quick('Navkar Mantra meaning')">🎵 Navkar Mantra</div>
+      <div class="card" onclick="quick('Bhaktamar Stotra explanation')">🎶 Bhaktamar Stotra</div>
+      <div class="card" onclick="quick('Uvasaggaharam meaning')">🎼 Uvasaggaharam</div>
     </div>
   </div>
 
@@ -186,7 +209,6 @@ async function send() {
 
   const chat = document.getElementById("chat");
 
-  // user
   chat.innerHTML += `
     <div class="user">
       <span class="bubble-user">${message}</span>
