@@ -1,26 +1,40 @@
-<script>
-async function send() {
-  const message = document.getElementById("input").value;
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Samyak AI</title>
+</head>
+<body>
 
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message })
-    });
+  <h1>AI Jain Guru</h1>
 
-    const data = await res.json();
+  <input id="input" placeholder="Ask something..." />
+  <button onclick="send()">Send</button>
 
-    console.log("API Response:", data);
+  <p id="response"></p>
 
-    document.getElementById("response").innerText =
-      data.reply || data.error || "No response";
+  <script>
+    async function send() {
+      const message = document.getElementById("input").value;
 
-  } catch (err) {
-    console.error(err);
-    document.getElementById("response").innerText = "Error connecting to AI";
-  }
-}
-</script>
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+
+        document.getElementById("response").innerText =
+          data.reply || data.error || "No response";
+
+      } catch (err) {
+        document.getElementById("response").innerText = "Error connecting to AI";
+      }
+    }
+  </script>
+
+</body>
+</html>
