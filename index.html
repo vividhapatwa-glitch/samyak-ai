@@ -2,39 +2,106 @@
 <html>
 <head>
   <title>Samyak AI</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .chat-box {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .user {
+      text-align: right;
+      margin: 10px;
+    }
+
+    .bot {
+      text-align: left;
+      margin: 10px;
+      color: #333;
+    }
+
+    .input-area {
+      max-width: 600px;
+      margin: 10px auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: gold;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>AI Jain Guru</h1>
+<h1>🪔 Samyak AI - Jain Guru</h1>
 
-  <input id="input" placeholder="Ask something..." />
+<div class="chat-box" id="chat"></div>
+
+<div class="input-area">
+  <input id="input" placeholder="Ask about Jainism..." />
   <button onclick="send()">Send</button>
+</div>
 
-  <p id="response"></p>
+<script>
+async function send() {
+  const input = document.getElementById("input");
+  const message = input.value;
 
-  <script>
-    async function send() {
-      const message = document.getElementById("input").value;
+  if (!message) return;
 
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message })
-        });
+  const chat = document.getElementById("chat");
 
-        const data = await res.json();
+  // show user message
+  chat.innerHTML += `<div class="user"><b>You:</b> ${message}</div>`;
 
-        document.getElementById("response").innerText =
-          data.reply || data.error || "No response";
+  input.value = "";
 
-      } catch (err) {
-        document.getElementById("response").innerText = "Error connecting to AI";
-      }
-    }
-  </script>
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await res.json();
+
+    // show AI response
+    chat.innerHTML += `<div class="bot"><b>Guru:</b> ${data.reply}</div>`;
+
+    chat.scrollTop = chat.scrollHeight;
+
+  } catch (err) {
+    chat.innerHTML += `<div class="bot">Error connecting</div>`;
+  }
+}
+</script>
 
 </body>
 </html>
